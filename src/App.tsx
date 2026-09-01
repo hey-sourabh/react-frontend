@@ -4,6 +4,7 @@ import {
   Outlet,
   Route,
   Routes,
+  useOutletContext,
 } from 'react-router-dom';
 import './App.css';
 
@@ -14,23 +15,28 @@ const HomePage = () => {
     </div>
   );
 };
-
+type User = {
+  isAuthenticated: boolean;
+  name: string;
+};
 const DashBoardLayout = () => {
-  const user = { isAuthenticated: true };
+  const user: User = { isAuthenticated: true, name: 'John' };
   if (!user.isAuthenticated) return <Navigate to="/" />;
   return (
     <>
       <div>header</div>
       <div>layout</div>
-      <Outlet />
+      <Outlet context={user} />
       <div>footer</div>
     </>
   );
 };
 const DashBoard = () => {
+  const user = useOutletContext<User>();
   return (
     <div>
       <h1>DashBoard Page</h1>
+      <p>Welcome {user.name}</p>
     </div>
   );
 };
@@ -81,7 +87,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} /> //HomePage component
+        {/* HomePage component */}
+        <Route path="/" element={<HomePage />} />
         {/* Private Routes or Protect Route only authenticated user can access */}
         <Route path="/dashboard" element={<DashBoardLayout />}>
           <Route index element={<DashBoard />} />
