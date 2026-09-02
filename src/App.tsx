@@ -7,6 +7,7 @@ import {
   useOutletContext,
 } from 'react-router-dom';
 import './App.css';
+import ToastPage from './features/ToastPage';
 
 const HomePage = () => {
   return (
@@ -94,6 +95,7 @@ function App() {
           <Route index element={<DashBoard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
+          <Route path = "toast" element = {<ToastPage/>}/>
         </Route>
         {/* Restricted Routes only non authenticated user can access */}
         <Route element={<RestrictedRoute />}>
