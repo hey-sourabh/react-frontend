@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ToastType } from "../features/ToastPage";
 import styles from "./Toast.module.css";
 
@@ -25,13 +25,15 @@ const Toast = ({
   const startTimeRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const startExit = () => {
-    if (isExiting) return;
-    setIsExiting(true);
-    setTimeout(() => {
-      onRemove();
-    }, 320);
-  };
+  const startExit = useCallback(() => {
+    setIsExiting((prev) => {
+      if (prev) return prev;
+      setTimeout(() => {
+        onRemove();
+      }, 320);
+      return true;
+    });
+  }, [onRemove]);
 
   useEffect(() => {
     if (duration <= 0 || isPaused || isExiting) return;
@@ -46,7 +48,7 @@ const Toast = ({
         clearTimeout(timerRef.current);
       }
     };
-  }, [isPaused, isExiting, duration]);
+  }, [isPaused, isExiting, duration, startExit]);
 
   const handleMouseEnter = () => {
     if (duration <= 0 || isExiting) return;
